@@ -1,130 +1,95 @@
-# Medical_Chatbot
+# Medical Chatbot
 
-# How to run?
-### STEPS:
+A sophisticated medical chatbot powered by Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG). This chatbot provides concise and accurate answers to medical questions based on the content of a medical book.
 
-Clone the repository
+## Features
 
-```bash
-git clone https://github.com/mo7amedatef/Medical_Chatbot.git
-```
-### STEP 01- Create a conda environment after opening the repository
+-   **Conversational AI:** Engage in a natural conversation with the chatbot to get answers to your medical questions.
+-   **Accurate & Contextual Answers:** The chatbot uses a medical book as its knowledge base, ensuring that the answers are relevant and accurate.
+-   **Concise Responses:** The chatbot is programmed to provide answers in three sentences or less.
+-   **Built with LangChain:** Leverages the power of the LangChain framework for building robust LLM applications.
 
-```bash
-conda create -n medibot python=3.10 -y
-```
+## How It Works
 
-```bash
-conda activate medibot
-```
+The application follows a Retrieval-Augmented Generation (RAG) architecture:
 
+1.  **Data Loading & Processing:** A medical book in PDF format is loaded and split into smaller text chunks.
+2.  **Embedding & Indexing:** The text chunks are converted into vector embeddings using a Hugging Face model (`sentence-transformers/all-MiniLM-L6-v2`) and stored in a Pinecone vector store for efficient retrieval.
+3.  **User Query:** The user asks a question through a Flask-based web interface.
+4.  **Retrieval:** The user's query is converted into an embedding, and a similarity search is performed on the Pinecone index to retrieve the most relevant text chunks.
+5.  **Generation:** The retrieved text chunks, along with the user's question and a system prompt, are passed to an OpenAI LLM (GPT-4o) to generate a human-like answer.
+6.  **Response:** The generated answer is displayed to the user in the chat interface.
 
-### STEP 02- install the requirements
-```bash
-pip install -r requirements.txt
-```
+## Tech Stack
 
+-   **Backend:** Flask
+-   **LLM:** OpenAI GPT-4o
+-   **Orchestration:** LangChain
+-   **Vector Store:** Pinecone
+-   **Embeddings:** Hugging Face `sentence-transformers/all-MiniLM-L6-v2`
+-   **Containerization:** Docker
+-   **CI/CD:** GitHub Actions
+-   **Deployment:** AWS (EC2, ECR)
 
-### Create a `.env` file in the root directory and add your Pinecone & openai credentials as follows:
+## Setup and Installation
 
-```ini
-PINECONE_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-OPENAI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-```
+### Prerequisites
 
+-   Python 3.10
+-   Conda (optional, but recommended)
 
-```bash
-# run the following command to store embeddings to pinecone
-python store_index.py
-```
+### Steps
 
-```bash
-# Finally run the following command
-python app.py
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/mo7amedatef/Medical_Chatbot.git
+    cd Medical_Chatbot
+    ```
 
-Now,
-```bash
-open up localhost:
-```
+2.  **Create a Conda environment (optional):**
+    ```bash
+    conda create -n medibot python=3.10 -y
+    conda activate medibot
+    ```
 
+3.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### Techstack Used:
+4.  **Set up environment variables:**
+    Create a `.env` file in the root directory and add your API keys:
+    ```ini
+    PINECONE_API_KEY="YOUR_PINECONE_API_KEY"
+    OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+    ```
 
-- Python
-- LangChain
-- Flask
-- GPT
-- Pinecone
+5.  **Store data and create index:**
+    Place your medical PDF book in the `data/` directory. Then, run the following command to process the data and store the embeddings in Pinecone:
+    ```bash
+    python store_index.py
+    ```
 
+6.  **Run the application:**
+    ```bash
+    python app.py
+    ```
+    The application will be available at `http://localhost:8080`.
 
+## Deployment
 
-# AWS-CICD-Deployment-with-Github-Actions
+This project is configured for continuous integration and deployment (CI/CD) using GitHub Actions. The workflow automates the following steps:
 
-## 1. Login to AWS console.
+1.  Builds a Docker image of the application.
+2.  Pushes the Docker image to Amazon Elastic Container Registry (ECR).
+3.  Deploys the application on an Amazon EC2 instance.
 
-## 2. Create IAM user for deployment
+For more details, refer to the `.github/workflows/cicd.yaml` file.
 
-	#with specific access
+## License
 
-	1. EC2 access : It is virtual machine
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-	2. ECR: Elastic Container registry to save your docker image in aws
+## Contributing
 
-
-	#Description: About the deployment
-
-	1. Build docker image of the source code
-
-	2. Push your docker image to ECR
-
-	3. Launch Your EC2 
-
-	4. Pull Your image from ECR in EC2
-
-	5. Lauch your docker image in EC2
-
-	#Policy:
-
-	1. AmazonEC2ContainerRegistryFullAccess
-
-	2. AmazonEC2FullAccess
-
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 100403450378.dkr.ecr.us-east-1.amazonaws.com/medicalbot
-
-	
-## 4. Create EC2 machine (Ubuntu) 
-
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optinal
-
-	sudo apt-get update -y
-
-	sudo apt-get upgrade
-	
-	#required
-
-	curl -fsSL https://get.docker.com -o get-docker.sh
-
-	sudo sh get-docker.sh
-
-	sudo usermod -aG docker ubuntu
-
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
-
-
-# 7. Setup github secrets:
-
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
-   - AWS_DEFAULT_REGION
-   - ECR_REPO
-   - PINECONE_API_KEY
-   - OPENAI_API_KEY
+Contributions are welcome! Please feel free to open an issue or submit a pull request.

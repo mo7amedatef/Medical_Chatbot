@@ -1,4 +1,3 @@
-
 system_prompt = (
     "You are an Medical assistant for question-answering tasks. "
     "Use the following pieces of retrieved context to answer "
